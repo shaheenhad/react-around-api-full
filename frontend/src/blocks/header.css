@@ -1,0 +1,40 @@
+.header {
+  margin-bottom: 40px;
+  padding: 45px 0 40px;
+  border-bottom: 1px solid rgba(84, 84, 84, 0.7);
+  max-width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.header__link {
+  text-decoration: none;
+  color: #fff;
+  font-size: 18px;
+  line-height: 22px;
+  transition: opacity 0.175s linear;
+  margin: 0 0 0 auto;
+}
+
+.header__link:hover {
+  opacity: 0.6;
+  cursor: pointer;
+}
+
+.header__logout {
+  color: #a9a9a9;
+  margin-left: 24px;
+}
+
+@media screen and (max-width: 768px) {
+  .header {
+    margin: 0 auto 40px;
+    padding-bottom: 32px;
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .header {
+    margin: 0 0 38.25px;
+  }
+}

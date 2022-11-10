@@ -5,7 +5,7 @@ const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
 const { notFoundErr } = require('./utils/constants');
 const { login, createUser } = require('./controllers/users');
-const auth = require('./middleware/auth');
+const auth = require('./middlewares/auth');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { celebrate, Joi, errors } = require('celebrate');
 
@@ -31,12 +31,10 @@ app.use(errors());
 app.use(errorLogger);
 app.use((err, req, res, next) => {
   const { statusCode = 500, message } = err;
-  res
-    .status(statusCode)
-    .send({
-      message:
-        statusCode === 500 ? 'An error has occured on the server' : message,
-    });
+  res.status(statusCode).send({
+    message:
+      statusCode === 500 ? 'An error has occured on the server' : message,
+  });
 });
 
 app.listen(PORT);

@@ -1,6 +1,7 @@
 const Card = require('../models/card');
 const { badReqErr, notFoundErr, intServErr } = require('../utils/constants');
 const { errorMessage } = require('../utils/errorMessage');
+const ForbiddenError = require('../errors/ForbiddenError');
 
 const cardErr = 'Card';
 
@@ -23,18 +24,15 @@ const createCard = (req, res) => {
     });
 };
 
-const deleteCard = (req, res) => {
-  Card.findByIdAndRemove(req.params.cardId)
-    .orFail(() => {
-      const error = new Error('No card found with that id');
-      error.statusCode = notFoundErr;
-      throw error;
+const deleteCard = (req, res, next) => {
+  Card.findOneAndRemove({ _id: req.params.cardId, owner: req.user._id })
+    .then((card) => {
+      if (!card) {
+        throw new ForbiddenError(`Cannot delete another user's cards`);
+      }
+      res.send({ data: card });
     })
-    .then((card) => res.send({ data: card }))
-    .catch((err) => {
-      const e = errorMessage(err, cardErr);
-      return res.status(e.errStatus).send({ message: e.errMessage });
-    });
+    .catch(next);
 };
 
 const likeCard = (req, res) => {

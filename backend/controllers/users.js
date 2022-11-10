@@ -1,3 +1,6 @@
+const { NODE_ENV, JWT_KEY } = process.env;
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const { notFoundErr } = require('../utils/constants');
 const { errorMessage } = require('../utils/errorMessage');
@@ -31,14 +34,47 @@ const getUserById = (req, res) => {
     });
 };
 
-const createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
-  User.create({ name, about, avatar })
-    .then((user) => res.send({ data: user }))
-    .catch((err) => {
-      const e = errorMessage(err, userErr);
-      return res.status(e.errStatus).send({ message: e.errMessage });
-    });
+const getCurrentUser = (req, res, next) => {
+  const currentUserId = req.user;
+  User.findById(currentUserId)
+    .orFail()
+    .then((user) => res.send(user))
+    .catch((err) => next(err));
+};
+
+const createUser = (req, res, next) => {
+  const { name, about, avatar, email } = req.body;
+  bcrypt.hash(req.body.password, 10).then((hash) => {
+    User.create({ name, about, avatar, email, password: hash })
+      .then((user) => res.send({ data: user }))
+      .catch((err) => {
+        const e = errorMessage(err, userErr);
+        return res.status(e.errStatus).send({ message: e.errMessage });
+      });
+  });
+};
+
+const login = (req, res, next) => {
+  const { email, password } = req.body;
+  User.findUserByCredentials(email, password)
+    .then((user) => {
+      const token = jwt.sign(
+        { _id: user._id },
+        NODE_ENV === 'production' ? JWT_KEY : 'secret_key',
+        { expiresIn: '7d' },
+      );
+      res.cookie('token', token, { httpOnly: true });
+      res.status(201).send({
+        token,
+        user: {
+          name: user.name,
+          about: user.about,
+          avatar: user.avatar,
+          email: user.email,
+        },
+      });
+    })
+    .catch(next);
 };
 
 const userUpdateOptions = {
@@ -79,7 +115,9 @@ const updateAvatar = (req, res) => {
 module.exports = {
   getUsers,
   getUserById,
+  getCurrentUser,
   createUser,
   updateUser,
   updateAvatar,
+  login,
 };

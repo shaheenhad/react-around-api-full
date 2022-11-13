@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Switch, withRouter } from "react-router-dom";
+import { Route, Switch, withRouter, Redirect } from "react-router-dom";
 import Main from "./Main";
 import EditProfilePopup from "./EditProfilePopup";
 import AddPlacePopup from "./AddPlacePopup";
@@ -261,6 +261,9 @@ class App extends React.Component {
               </Route>
               <Route path="/signin">
                 <Login logIn={this.handleLogIn} />
+              </Route>
+              <Route path="*">
+                <Redirect to="/signin" />
               </Route>
             </Switch>
 

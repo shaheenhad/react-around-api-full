@@ -72,11 +72,7 @@ class Api {
 }
 
 const api = new Api({
-  baseUrl: "https://around.nomoreparties.co/v1/group-12",
-  headers: {
-    authorization: "233760b2-865b-418c-a988-0a5daaaf7846",
-    "Content-Type": "application/json",
-  },
+  baseUrl: "https://api.sharound.students.nomoredomainssbs.ru",
 });
 
 export default api;

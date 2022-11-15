@@ -29,6 +29,8 @@ export const authorize = (email, password) => {
     .then((res) => {
       if (handleResponse(res) === res) {
         return res.json();
+      } else {
+        throw new Error("Failed to login");
       }
     })
     .then((res) => {

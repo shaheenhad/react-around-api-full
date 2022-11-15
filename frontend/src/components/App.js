@@ -45,24 +45,6 @@ class App extends React.Component {
     this.handleRegister = this.handleRegister.bind(this);
   }
   componentDidMount() {
-    api
-      .getUser()
-      .then((res) => {
-        this.setState({ currentUser: res });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-
-    // Get initial cards
-    api
-      .getInitialCards()
-      .then((res) => {
-        this.setState({ cards: res });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
     // Check if user has jwt token
     const jwt = localStorage.getItem("jwt");
     if (jwt) {
@@ -83,6 +65,25 @@ class App extends React.Component {
           console.log(err);
         });
     }
+
+    api
+      .getUser()
+      .then((res) => {
+        this.setState({ currentUser: res });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    // Get initial cards
+    api
+      .getInitialCards()
+      .then((res) => {
+        this.setState({ cards: res });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   handleLogIn(email, password) {

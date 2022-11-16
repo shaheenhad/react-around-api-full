@@ -7,21 +7,21 @@ const userSchema = new mongoose.Schema({
   name: {
     type: String,
     default: 'Jacques Cousteau',
-    // required: true,
+    required: true,
     minlength: 2,
     maxlength: 30,
   },
   about: {
     type: String,
     default: 'Explorer',
-    // required: true,
+    required: true,
     minlength: 2,
     maxlength: 30,
   },
   avatar: {
     type: String,
     default: 'https://pictures.s3.yandex.net/resources/avatar_1604080799.jpg',
-    // required: true,
+    required: true,
     validate: {
       validator(v) {
         return /^(https?):\/\/(www\.)?[\w-@:%+~#=]+[.][.\w/\-?#=&~@:()!$+%]*$/gm.test(

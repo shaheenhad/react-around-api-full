@@ -25,7 +25,7 @@ app.use(bodyParser.json());
 app.post('/signin', login);
 app.post('/signup', createUser);
 
-// app.use(auth);
+app.use(auth);
 app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);
 app.use((req, res) => {

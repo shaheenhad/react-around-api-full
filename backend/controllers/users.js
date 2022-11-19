@@ -63,7 +63,6 @@ const login = (req, res, next) => {
         NODE_ENV === 'production' ? JWT_KEY : 'secret_key',
         { expiresIn: '7d' },
       );
-      res.cookie('token', token, { httpOnly: true });
       res.status(201).send({
         token,
         user: {

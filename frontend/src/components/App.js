@@ -84,9 +84,7 @@ class App extends React.Component {
       .authorize(email, password)
       .then((res) => {
         if (res) {
-          this.setState({ loggedIn: true, userEmail: email }, () =>
-            this.props.history.push("/")
-          );
+          this.componentDidMount();
         } else {
           this.handleAuthRegClick(false);
         }

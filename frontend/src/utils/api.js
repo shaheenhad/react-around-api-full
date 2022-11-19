@@ -12,9 +12,12 @@ class Api {
     return Promise.all([this.getUser(), this.getInitialCards()]);
   }
 
-  getInitialCards() {
+  getInitialCards(token) {
     return fetch(`${this._baseUrl}/cards`, {
-      headers: this._headers,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
     }).then((res) => this._handleResponse(res));
   }
 

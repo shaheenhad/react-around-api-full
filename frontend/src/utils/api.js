@@ -18,9 +18,12 @@ class Api {
     }).then((res) => this._handleResponse(res));
   }
 
-  getUser() {
+  getUser(token) {
     return fetch(`${this._baseUrl}/users/me`, {
-      headers: this._headers,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
     }).then((res) => this._handleResponse(res));
   }
 

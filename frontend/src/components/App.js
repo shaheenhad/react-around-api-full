@@ -28,6 +28,7 @@ class App extends React.Component {
       cards: [],
       isLoading: false,
       regSuccess: false,
+      jwt: null,
     };
     this.handleEditAvatarClick = this.handleEditAvatarClick.bind(this);
     this.handleEditProfileClick = this.handleEditProfileClick.bind(this);
@@ -48,6 +49,7 @@ class App extends React.Component {
     // Check if user has jwt token
     const jwt = localStorage.getItem("jwt");
     if (jwt) {
+      this.setState({ jwt: jwt });
       auth
         .getUser(jwt)
         .then((res) => {
@@ -55,6 +57,7 @@ class App extends React.Component {
             this.setState({
               loggedIn: true,
               userEmail: res.data.email,
+              currentUser: res.data,
             });
           }
         })
@@ -64,26 +67,16 @@ class App extends React.Component {
         .catch((err) => {
           console.log(err);
         });
+
+      api
+        .getInitialCards(jwt)
+        .then((res) => {
+          this.setState({ cards: res });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
-
-    api
-      .getUser()
-      .then((res) => {
-        this.setState({ currentUser: res });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-
-    // Get initial cards
-    api
-      .getInitialCards()
-      .then((res) => {
-        this.setState({ cards: res });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
   }
 
   handleLogIn(email, password) {
@@ -122,7 +115,7 @@ class App extends React.Component {
 
   handleLogOut() {
     localStorage.removeItem("jwt");
-    this.setState({ loggedIn: false, email: null });
+    this.setState({ loggedIn: false, email: null, currentUser: {} });
   }
 
   handleEditProfileClick() {

@@ -1,7 +1,7 @@
 const BASE_URL = "https://api.sharound.students.nomoredomainssbs.ru";
 
 const handleResponse = (res) => {
-  return res.ok ? res : Promise.reject(`Error: ${res.status}`);
+  return res.ok ? res.json() : Promise.reject(`Error: ${res.status}`);
 };
 
 export const register = (email, password) => {
@@ -11,11 +11,7 @@ export const register = (email, password) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ password: password, email: email }),
-  }).then((res) => {
-    if (handleResponse(res) === res) {
-      return res.json();
-    }
-  });
+  }).then((res) => handleResponse(res));
 };
 
 export const authorize = (email, password) => {
@@ -26,13 +22,7 @@ export const authorize = (email, password) => {
     },
     body: JSON.stringify({ password: password, email: email }),
   })
-    .then((res) => {
-      if (handleResponse(res) === res) {
-        return res.json();
-      } else {
-        throw new Error("Failed to login");
-      }
-    })
+    .then((res) => handleResponse(res))
     .then((res) => {
       localStorage.setItem("jwt", res.token);
       return true;
@@ -49,9 +39,5 @@ export const getUser = (token) => {
       "Content-Type": "application/json",
       "Authorization": `Bearer ${token}`,
     },
-  }).then((res) => {
-    if (handleResponse(res) === res) {
-      return res.json();
-    }
-  });
+  }).then((res) => handleResponse(res));
 };

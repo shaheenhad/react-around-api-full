@@ -3,13 +3,13 @@ const jwt = require('jsonwebtoken');
 const LoginError = require('../errors/LoginError');
 
 module.exports = (req, res, next) => {
-  const { authorization } = req.headers;
-  if (!authorization || !authorization.startsWith('Bearer ')) {
+  const { Authorization } = req.headers;
+  if (!Authorization || !Authorization.startsWith('Bearer ')) {
     const err = new LoginError('Authorization Required');
     next(err);
   }
 
-  const token = authorization.replace('Bearer ', '');
+  const token = Authorization.replace('Bearer ', '');
   let payload;
 
   try {

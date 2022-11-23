@@ -78,7 +78,7 @@ class Api {
 }
 
 const api = new Api({
-  baseUrl: "https://api.sharound.students.nomoredomainssbs.ru",
+  baseUrl: "https://api.shhad.students.nomoredomainssbs.ru",
 });
 
 export default api;

@@ -1,4 +1,4 @@
-const BASE_URL = "https://api.sharound.students.nomoredomainssbs.ru";
+const BASE_URL = "https://api.shhad.students.nomoredomainssbs.ru";
 
 const handleResponse = (res) => {
   return res.ok ? res.json() : Promise.reject(`Error: ${res.status}`);

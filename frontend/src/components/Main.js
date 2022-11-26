@@ -6,7 +6,6 @@ import Footer from "./Footer";
 
 function Main(props) {
   const currentUser = React.useContext(CurrentUserContext);
-
   return (
     <>
       <Header userEmail={props.userEmail} logOut={props.logOut} />

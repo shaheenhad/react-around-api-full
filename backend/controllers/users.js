@@ -25,7 +25,7 @@ const getUserById = (req, res) => {
     })
     .then((user) => {
       if (user) {
-        res.send({ data: user });
+        res.send(user);
       }
     })
     .catch((err) => {
@@ -89,7 +89,7 @@ const updateUser = (req, res) => {
       error.statusCode = notFoundErr;
       throw error;
     })
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.send(user))
     .catch((err) => {
       const e = errorMessage(err, userErr);
       return res.status(e.errStatus).send({ message: e.errMessage });
@@ -104,7 +104,7 @@ const updateAvatar = (req, res) => {
       error.statusCode = notFoundErr;
       throw error;
     })
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.send(user))
     .catch((err) => {
       const e = errorMessage(err, userErr);
       return res.status(e.errStatus).send({ message: e.errMessage });

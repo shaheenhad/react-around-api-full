@@ -3,9 +3,8 @@ import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
 function Card({ card, onCardClick, onCardLike, onCardDelete }) {
   const currentUser = React.useContext(CurrentUserContext);
-
   // Checking if the current user is the owner of the current card
-  const isOwn = card.owner._id === currentUser._id;
+  const isOwn = card.owner === currentUser._id;
 
   // Creating a variable for the delete button
   const cardDeleteButtonClassName = `card__trash ${
@@ -13,7 +12,7 @@ function Card({ card, onCardClick, onCardLike, onCardDelete }) {
   }`;
 
   // Check if the card was liked by the current user
-  const isLiked = card.likes.some((user) => user._id === currentUser._id);
+  const isLiked = card.likes.some((user) => user === currentUser._id);
 
   // Creating a variable for the like button
   const cardLikeButtonClassName = `card__like ${

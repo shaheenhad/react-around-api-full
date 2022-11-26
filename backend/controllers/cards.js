@@ -7,7 +7,7 @@ const cardErr = 'Card';
 
 const getCards = (req, res) => {
   Card.find({})
-    .then((cards) => res.send({ data: cards }))
+    .then((cards) => res.send(cards))
     .catch((err) => {
       const e = errorMessage(err, cardErr);
       return res.status(e.errStatus).send({ message: e.errMessage });
@@ -17,7 +17,7 @@ const getCards = (req, res) => {
 const createCard = (req, res) => {
   const { name, link } = req.body;
   Card.create({ name, link, owner: req.user._id })
-    .then((card) => res.send({ data: card }))
+    .then((card) => res.send(card))
     .catch((err) => {
       const e = errorMessage(err, cardErr);
       return res.status(e.errStatus).send({ message: e.errMessage });
@@ -30,7 +30,7 @@ const deleteCard = (req, res, next) => {
       if (!card) {
         throw new ForbiddenError(`Cannot delete another user's cards`);
       }
-      res.send({ data: card });
+      res.send(card);
     })
     .catch(next);
 };
@@ -46,7 +46,7 @@ const likeCard = (req, res) => {
       error.statusCode = notFoundErr;
       throw error;
     })
-    .then((card) => res.send({ data: card }))
+    .then((card) => res.send(card))
     .catch((err) => {
       const e = errorMessage(err, cardErr);
       return res.status(e.errStatus).send({ message: e.errMessage });
@@ -64,7 +64,7 @@ const unlikeCard = (req, res) => {
       error.statusCode = notFoundErr;
       throw error;
     })
-    .then((card) => res.send({ data: card }))
+    .then((card) => res.send(card))
     .catch((err) => {
       const e = errorMessage(err, cardErr);
       return res.status(e.errStatus).send({ message: e.errMessage });

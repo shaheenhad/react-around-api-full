@@ -30,10 +30,13 @@ class Api {
     }).then((res) => this._handleResponse(res));
   }
 
-  setUserInfo({ name, description }) {
+  setUserInfo({ name, description }, token) {
     return fetch(`${this._baseUrl}/users/me`, {
       method: "PATCH",
-      headers: this._headers,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
       body: JSON.stringify({
         name: name,
         about: description,
@@ -41,10 +44,13 @@ class Api {
     }).then((res) => this._handleResponse(res));
   }
 
-  addCard({ name, link }) {
+  addCard({ name, link }, token) {
     return fetch(`${this._baseUrl}/cards`, {
       method: "POST",
-      headers: this._headers,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
       body: JSON.stringify({
         name: name,
         link: link,
@@ -52,24 +58,33 @@ class Api {
     }).then((res) => this._handleResponse(res));
   }
 
-  deleteCard(cardId) {
+  deleteCard(cardId, token) {
     return fetch(`${this._baseUrl}/cards/${cardId}`, {
       method: "DELETE",
-      headers: this._headers,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
     }).then((res) => this._handleResponse(res));
   }
 
-  toggleLike(id, isLiked) {
-    return fetch(`${this._baseUrl}/cards/likes/${id}`, {
+  toggleLike(id, isLiked, token) {
+    return fetch(`${this._baseUrl}/cards/${id}/likes`, {
       method: isLiked ? "DELETE" : "PUT",
-      headers: this._headers,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
     }).then((res) => this._handleResponse(res));
   }
 
-  updateProfilePic({ avatar }) {
+  updateProfilePic({ avatar }, token) {
     return fetch(`${this._baseUrl}/users/me/avatar`, {
       method: "PATCH",
-      headers: this._headers,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
       body: JSON.stringify({
         avatar,
       }),
@@ -79,6 +94,7 @@ class Api {
 
 const api = new Api({
   baseUrl: "https://api.shhad.students.nomoredomainssbs.ru",
+  // baseUrl: `http://localhost:3000`,
 });
 
 export default api;

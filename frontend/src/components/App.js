@@ -56,8 +56,8 @@ class App extends React.Component {
           if (res) {
             this.setState({
               loggedIn: true,
-              userEmail: res.data.email,
-              currentUser: res.data,
+              userEmail: res.email,
+              currentUser: res,
             });
           }
         })
@@ -152,7 +152,7 @@ class App extends React.Component {
   handleUpdateUser(info) {
     this.setState({ isLoading: true });
     api
-      .setUserInfo(info)
+      .setUserInfo(info, this.state.jwt)
       .then((res) => {
         this.setState({ currentUser: res }, this.closeAllPopups());
       })
@@ -167,7 +167,7 @@ class App extends React.Component {
   handleUpdateAvatar(data) {
     this.setState({ isLoading: true });
     api
-      .updateProfilePic(data)
+      .updateProfilePic(data, this.state.jwt)
       .then((res) => {
         this.setState({ currentUser: res }, this.closeAllPopups());
       })
@@ -182,12 +182,12 @@ class App extends React.Component {
   handleCardLike(card) {
     // Check one more time if this card was already liked
     const isLiked = card.likes.some(
-      (user) => user._id === this.state.currentUser._id
+      (user) => user === this.state.currentUser._id
     );
 
     // Send a request to the API and getting the updated card data
     api
-      .toggleLike(card._id, isLiked)
+      .toggleLike(card._id, isLiked, this.state.jwt)
       .then((newCard) => {
         const newCards = this.state.cards.map((c) =>
           c._id === card._id ? newCard : c
@@ -201,7 +201,7 @@ class App extends React.Component {
 
   handleCardDelete(card) {
     api
-      .deleteCard(card._id)
+      .deleteCard(card._id, this.state.jwt)
       .then(() => {
         const newCards = this.state.cards.filter((c) => c._id !== card._id);
         this.setState({ cards: newCards });
@@ -214,7 +214,7 @@ class App extends React.Component {
   handleAddPlaceSubmit(card) {
     this.setState({ isLoading: true });
     api
-      .addCard(card)
+      .addCard(card, this.state.jwt)
       .then((res) => {
         const newCards = [res, ...this.state.cards];
         this.setState({ cards: newCards }, this.closeAllPopups());

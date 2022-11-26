@@ -7,4 +7,5 @@ This repository contains the full API of "Around the U.S." project that features
 - a link to repository with the complete React application which uses this API;
 - a link to the website that hosts your API.
 
-sharound.students.nomoredomainssbs.ru
+https://github.com/shaheenhad/react-around-api-full
+shhad.students.nomoredomainssbs.ru

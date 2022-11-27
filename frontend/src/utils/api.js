@@ -93,8 +93,8 @@ class Api {
 }
 
 const api = new Api({
-  // baseUrl: "https://api.shhad.students.nomoredomainssbs.ru",
-  baseUrl: `http://localhost:3000`,
+  baseUrl: "https://api.shhad.students.nomoredomainssbs.ru",
+  // baseUrl: `http://localhost:3000`,
 });
 
 export default api;

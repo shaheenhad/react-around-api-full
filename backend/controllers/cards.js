@@ -2,13 +2,13 @@ const Card = require('../models/card');
 const ForbiddenError = require('../errors/ForbiddenError');
 const NotFoundError = require('../errors/NotFoundError');
 
-const getCards = (req, res) => {
+const getCards = (req, res, next) => {
   Card.find({})
     .then((cards) => res.send(cards))
     .catch((err) => next(err));
 };
 
-const createCard = (req, res) => {
+const createCard = (req, res, next) => {
   const { name, link } = req.body;
   Card.create({ name, link, owner: req.user._id })
     .then((card) => res.send(card))
@@ -27,12 +27,12 @@ const deleteCard = (req, res, next) => {
           .then(() => res.send({ message: 'Card deleted' }));
         return;
       }
-      throw new ForbiddenError(`Cannot delete another user's cards`);
+      throw new ForbiddenError("Cannot delete another user's cards");
     })
     .catch(next);
 };
 
-const likeCard = (req, res) => {
+const likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } },
@@ -45,7 +45,7 @@ const likeCard = (req, res) => {
     .catch((err) => next(err));
 };
 
-const unlikeCard = (req, res) => {
+const unlikeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } },

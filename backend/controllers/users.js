@@ -5,15 +5,13 @@ const User = require('../models/user');
 const { ConflictError } = require('../errors/ConflictError');
 const NotFoundError = require('../errors/NotFoundError');
 
-const userErr = 'User';
-
-const getUsers = (req, res) => {
+const getUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send({ data: users }))
     .catch((err) => next(err));
 };
 
-const getUserById = (req, res) => {
+const getUserById = (req, res, next) => {
   User.findById(req.params.userId)
     .orFail(() => {
       throw new NotFoundError('User not found');
@@ -50,6 +48,7 @@ const createUser = (req, res, next) => {
           .then((user) => res.send({ email: user.email }))
           .catch(next);
       });
+      return true;
     })
     .catch(next);
 };
@@ -81,7 +80,7 @@ const userUpdateOptions = {
   runValidators: true, // the data will be validated before the update
 };
 
-const updateUser = (req, res) => {
+const updateUser = (req, res, next) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(req.user._id, { name, about }, userUpdateOptions)
     .orFail(() => {
@@ -91,7 +90,7 @@ const updateUser = (req, res) => {
     .catch((err) => next(err));
 };
 
-const updateAvatar = (req, res) => {
+const updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(req.user._id, { avatar }, userUpdateOptions)
     .orFail(() => {

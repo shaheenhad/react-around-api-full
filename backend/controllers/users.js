@@ -2,36 +2,28 @@ const { NODE_ENV, JWT_KEY } = process.env;
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const { notFoundErr } = require('../utils/constants');
-const { errorMessage } = require('../utils/errorMessage');
+const { ConflictError } = require('../errors/ConflictError');
+const NotFoundError = require('../errors/NotFoundError');
 
 const userErr = 'User';
 
 const getUsers = (req, res) => {
   User.find({})
     .then((users) => res.send({ data: users }))
-    .catch((err) => {
-      const e = errorMessage(err);
-      return res.status(e.errStatus).send({ message: e.errMessage });
-    });
+    .catch((err) => next(err));
 };
 
 const getUserById = (req, res) => {
   User.findById(req.params.userId)
     .orFail(() => {
-      const error = new Error('DocumentNotFoundError');
-      error.statusCode = notFoundErr;
-      throw error;
+      throw new NotFoundError('User not found');
     })
     .then((user) => {
       if (user) {
         res.send(user);
       }
     })
-    .catch((err) => {
-      const e = errorMessage(err, userErr);
-      return res.status(e.errStatus).send({ message: e.errMessage });
-    });
+    .catch((err) => next(err));
 };
 
 const getCurrentUser = (req, res, next) => {
@@ -44,14 +36,22 @@ const getCurrentUser = (req, res, next) => {
 
 const createUser = (req, res, next) => {
   const { name, about, avatar, email } = req.body;
-  bcrypt.hash(req.body.password, 10).then((hash) => {
-    User.create({ name, about, avatar, email, password: hash })
-      .then((user) => res.send({ data: user }))
-      .catch((err) => {
-        const e = errorMessage(err, userErr);
-        return res.status(e.errStatus).send({ message: e.errMessage });
+
+  User.findOne({ email })
+    .select('+password')
+    .then((account) => {
+      if (account) {
+        return Promise.reject(
+          new ConflictError('User with that email already exists'),
+        );
+      }
+      bcrypt.hash(req.body.password, 10).then((hash) => {
+        User.create({ name, about, avatar, email, password: hash })
+          .then((user) => res.send({ email: user.email }))
+          .catch(next);
       });
-  });
+    })
+    .catch(next);
 };
 
 const login = (req, res, next) => {
@@ -85,30 +85,20 @@ const updateUser = (req, res) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(req.user._id, { name, about }, userUpdateOptions)
     .orFail(() => {
-      const error = new Error('User not found');
-      error.statusCode = notFoundErr;
-      throw error;
+      throw new NotFoundError('User not found');
     })
     .then((user) => res.send(user))
-    .catch((err) => {
-      const e = errorMessage(err, userErr);
-      return res.status(e.errStatus).send({ message: e.errMessage });
-    });
+    .catch((err) => next(err));
 };
 
 const updateAvatar = (req, res) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(req.user._id, { avatar }, userUpdateOptions)
     .orFail(() => {
-      const error = new Error('User not found');
-      error.statusCode = notFoundErr;
-      throw error;
+      throw new NotFoundError('User not found');
     })
     .then((user) => res.send(user))
-    .catch((err) => {
-      const e = errorMessage(err, userErr);
-      return res.status(e.errStatus).send({ message: e.errMessage });
-    });
+    .catch((err) => next(err));
 };
 
 module.exports = {

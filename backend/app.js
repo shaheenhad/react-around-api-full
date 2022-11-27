@@ -3,11 +3,11 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
-const { notFoundErr } = require('./utils/constants');
+const NotFoundError = require('./errors/NotFoundError');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-const { errors } = require('celebrate');
+const { celebrate, Joi, errors } = require('celebrate');
 const cors = require('cors');
 
 require('dotenv').config();
@@ -21,15 +21,40 @@ mongoose.connect('mongodb://localhost:27017/aroundb');
 app.use(cors());
 app.options('*', cors());
 app.use(requestLogger);
+
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Server will crash now');
+  }, 0);
+});
+
 app.use(bodyParser.json());
-app.post('/signin', login);
-app.post('/signup', createUser);
+app.post(
+  '/signin',
+  celebrate({
+    body: Joi.object().keys({
+      email: Joi.string().required(),
+      password: Joi.string().required(),
+    }),
+  }),
+  login,
+);
+app.post(
+  '/signup',
+  celebrate({
+    body: Joi.object().keys({
+      email: Joi.string().required(),
+      password: Joi.string().required(),
+    }),
+  }),
+  createUser,
+);
 
 app.use(auth);
 app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);
 app.use((req, res) => {
-  res.status(notFoundErr).send({ message: 'Requested resource not found' });
+  throw new NotFoundError('Requested resource not found');
 });
 
 app.use(errors());

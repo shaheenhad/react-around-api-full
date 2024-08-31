@@ -8,4 +8,5 @@ This repository contains the full API of "Around the U.S." project that features
 
 The public domain can be found here:
 
-- shhad.students.nomoredomainssbs.ru
+- <s>shhad.students.nomoredomainssbs.ru</s>
+- The above link is no longer active, but a demo of the project can still be found here: https://shaheenhad.github.io/around-react/
